@@ -1,0 +1,117 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#containerWhole {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+#over {
+    display: flex;
+    width: fit-content;
+    border: none;
+    z-index: 999;
+}
+
+#over>div:nth-child(8) {
+    border-right: 1px solid #ADFF2F85;
+}
+
+/* #over>div:nth-child(1) {
+    /* box-shadow: 5px 5px 3px #ADFF2F85 inset; */
+/* } */
+
+#over:nth-child(10)>div {
+    border-bottom: 1px solid #ADFF2F85;
+}
+
+#over>div>svg {
+    height: fit-content;
+}
+
+#over>div {
+    display: flex;
+    border-top: 1px solid #ADFF2F85;
+    border-left: 1px solid #ADFF2F85;
+    box-shadow: 0px 0px 15px #ADFF2F85;
+    width: 4vw;
+    height: 4vw;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#over>div:hover {
+    background-color: #FFFFFF10;
+}
+
+#over>div>div {
+    position: relative;
+    margin: 0;
+    width: 4vw;
+    height: 4vw;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+body {
+    background-color: black;
+}
+
+#playerInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: white;
+    margin: 2vh;
+}
+
+#currentPlayerDiv {
+    width: 25px;
+}
+
+/* #currentPlayerDiv>svg>g>g>ellipse {
+    fill: red !important;
+} */
+
+.spinMole {
+    animation: rotateMolecule 5s linear 0.1s infinite;
+}
+
+.shakeMoleSlow {
+    animation: rotateMolecule 5s linear 0.1s infinite, shakeMolecule 1s linear 0.1s infinite;
+}
+
+.shakeMoleFast {
+    animation: rotateMolecule 3s linear 0.1s infinite, shakeMolecule 0.1s linear 0.1s infinite;
+}
+
+@keyframes rotateMolecule {
+    from {
+        rotate: 0deg;
+    }
+
+    to {
+        rotate: 360deg;
+    }
+}
+
+@keyframes shakeMolecule {
+    from {
+        top: -1%;
+    }
+
+    to {
+        top: 1%;
+    }
+}
