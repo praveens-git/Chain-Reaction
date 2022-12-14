@@ -1,8 +1,9 @@
 let cells = [];
+let cellsLast = [];
 const maxRows = 10;
 const maxCols = 8;
 
-const numberOfPlayers = 2;
+const numberOfPlayers = 3;
 
 const playerColors = ["red", "green", "blue"]
 let currentPlayers = playerColors.filter((v, i) => i < numberOfPlayers);
@@ -12,6 +13,7 @@ let frame;
 let ballSvg = undefined;
 
 let hasStarted = false;
+let undoAvailable = false;
 
 async function delay(ms) {
     return new Promise((res, rej) => {
@@ -37,6 +39,7 @@ function switchPlayers() {
         hasStarted = true;
     }
     document.querySelectorAll("#currentPlayerDiv>svg>g>g>.SVG_white_area").forEach(i => i.style.fill = `${currentPlayers[currentPlayer]}`);
+    undoAvailable = true;
 }
 
 function onCellClick(e) {
@@ -47,6 +50,8 @@ function onCellClick(e) {
         CellId = e.target.parentElement.id;
     }
 
+    cellsLast = []
+    cells.forEach(v => cellsLast.push(Object.assign({}, v)));
 
     if (cells[e.target.id].count == 0) {
         cells[e.target.id].count++;
@@ -68,26 +73,38 @@ function getlocation(i, j) {
 
 let playerDotsCount = currentPlayers.map(() => 0);
 
+function showPopUp(message) {
+    const overlayDiv = document.createElement("div");
+    overlayDiv.id = "overlayDiv";
+    const overlayCDiv = document.createElement("div");
+    overlayCDiv.id = "overlayCDiv";
+    overlayCDiv.textContent = message;
+    overlayDiv.appendChild(overlayCDiv);
+    document.body.appendChild(overlayDiv);
+}
+
 function hasPlayerGameOver() {
     if (!hasStarted) return;
 
     if (currentPlayers.length == 1) {
-        alert("Game Over");
+        showPopUp(`Game Over. ${currentPlayers[0]} Wins`.toLowerCase().split(" ").map((v) => v.charAt(0).toUpperCase() + v.slice(1)).join(" "));
+        hasStarted = false;
         clearInterval(frame);
         document.querySelectorAll("#over>div").forEach(d => d.removeEventListener('click', onCellClick));
     }
 
-    playerDotsCount = playerDotsCount.map((i) => i * 0);
+    playerDotsCount = currentPlayers.map(() => 0);
     for (let i = 0; i < cells.length; i++) {
         const c = cells[i].color;
         if (currentPlayers.findIndex((x) => x == c) >= 0) {
             playerDotsCount[currentPlayers.findIndex((x) => x == c)]++;
         }
     }
+
     for (let i = 0; i < playerDotsCount.length; i++) {
         if (playerDotsCount[i] == 0) {
-            currentPlayers = currentPlayers.slice(i, 1);
-            console.log(playerDotsCount);
+            currentPlayers.splice(i, 1);
+            break;
         }
     }
 }
@@ -128,6 +145,18 @@ frame = setInterval(() => {
     hasPlayerGameOver();
 }, 100);
 
+function doUndo() {
+    if (!undoAvailable) return;
+    cells = []
+    cellsLast.forEach(v => cells.push((new CellObj(Object.assign({}, v)))));
+    currentPlayer--;
+    if (currentPlayer < 0) {
+        currentPlayer = currentPlayers.length - 1;
+    }
+    document.querySelectorAll("#currentPlayerDiv>svg>g>g>.SVG_white_area").forEach(i => i.style.fill = `${currentPlayers[currentPlayer]}`);
+    undoAvailable = false;
+}
+
 async function initGrid() {
     await delay(100);
     const containerWhole = document.createElement("div");
@@ -135,11 +164,18 @@ async function initGrid() {
     const PlayerDiv = document.createElement("div");
     const PlayerCountDiv = document.createElement("div");
     const CurPlayerDiv = document.createElement("div");
+    const undoDiv = document.createElement("div");
+    const undoBtn = document.createElement("i");
+    undoBtn.addEventListener('click', doUndo);
+    // <i class="fa-solid fa-arrow-rotate-left"></i>
+    undoBtn.className += "fa-solid fa-arrow-rotate-left";
+    undoDiv.appendChild(undoBtn);
     CurPlayerDiv.innerHTML = ballSvg;
     CurPlayerDiv.id = "currentPlayerDiv";
     PlayerCountDiv.textContent = `Number of Player: ${numberOfPlayers}`;
     PlayerDiv.id = "playerInfo"
     PlayerDiv.appendChild(PlayerCountDiv);
+    PlayerDiv.appendChild(undoDiv);
     PlayerDiv.appendChild(CurPlayerDiv);
     const container = document.createElement("div");
     container.id = "container";

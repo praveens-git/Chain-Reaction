@@ -84,6 +84,27 @@ body {
     fill: red !important;
 } */
 
+#overlayDiv {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #00000055;
+}
+
+#overlayCDiv {
+    width: fit-content;
+    padding: 2vw;
+    font-weight: bolder;
+    background-color: snow;
+}
+
 .spinMole {
     animation: rotateMolecule 5s linear 0.1s infinite;
 }

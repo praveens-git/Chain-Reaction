@@ -66,6 +66,10 @@ class Cell {
             this.previousCount = this.count;
         }
 
+        if (!this.count) {
+            this.element.innerHTML = "";
+        }
+
         if (this.count >= this.neighbours) {
             this.count = 0;
             this.element.classList.remove('spinMole');
@@ -77,5 +81,12 @@ class Cell {
                 c.setColor(this.color);
             });
         }
+    }
+}
+
+class CellObj extends Cell {
+    constructor(obj) {
+        super(obj.i, obj.j, obj.element, obj.ballSVG);
+        Object.assign(this, obj);
     }
 }
